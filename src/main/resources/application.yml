@@ -1,7 +1,9 @@
 server:
-  port: 8001
+  port: 8002
 
 spring:
+  application:
+    name: board
   jpa:
     show-sql: true
     properties:
