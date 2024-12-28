@@ -15,10 +15,10 @@ public class Board {
 	private int boardId;
 
 	@Column(name = "writerId", nullable = false)
-	private int writerId;
+	private int userId;
 
 	@Column(name = "writer", nullable = false, length = 25)
-	private String writer;
+	private String userName;
 
 	@Column(name = "subject", nullable = false, length = 50)
 	private String subject;
