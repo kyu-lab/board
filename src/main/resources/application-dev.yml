@@ -2,3 +2,11 @@ spring:
   h2:
     console:
       enabled: false
+
+# 운영시에는 키 필요
+grpc:
+  server:
+    security:
+      certificate-chain: #인증서 체인 경로
+      private-key: # 개인 키 파일 경로
+      private-key-password: # 개인 키 비밀번호

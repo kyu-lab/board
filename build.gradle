@@ -4,6 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.hibernate.orm' version '6.6.4.Final'
     id 'org.graalvm.buildtools.native' version '0.10.4'
+//    id 'com.google.protobuf' version '0.9.4'
 }
 
 group = 'com.kyulab'
@@ -23,8 +24,14 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        // common 객체를 받기 위해 추가함
+        url = uri('https://jitpack.io')
+    }
+    maven {
+        url = uri("https://repo.spring.io/plugins-release")
+    }
 }
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -36,7 +43,17 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0"
+
+    // protobuf 설정
+    implementation 'com.github.kyu-lab:common:dad3109ad2' // 테스트중
+    implementation 'net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE'
+    implementation 'net.devh:grpc-client-spring-boot-starter:3.1.0.RELEASE'
+    implementation "io.grpc:grpc-netty:1.56.1" // gRPC 전송을 위한 Netty
+    implementation "io.grpc:grpc-netty-shaded:1.69.0"
+    implementation 'com.google.protobuf:protobuf-java:4.28.2'
+    implementation "com.google.protobuf:protobuf-java-util:4.28.2"
 }
+
 
 hibernate {
     enhancement {

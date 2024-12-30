@@ -47,5 +47,9 @@ public class BoardController {
 				});
 	}
 
+	@GetMapping("/test")
+	public String getUser(@RequestParam String name) {
+		return boardService.getUserResponse(name);
+	}
 
 }

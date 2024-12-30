@@ -27,3 +27,10 @@ springdoc:
   cache:
     disabled: true
   model-and-view-allowed: true
+
+grpc:
+  client:
+    user-service:
+      address: static://localhost:9001  # 연결할 gRPC 서버의 주소 (user 모듈의 gRPC 서버 주소)
+      enableKeepAlive: false # 연결 지속 여부
+      negotiationType: PLAINTEXT # SSL/TLS 암호화 사용하지 않음 (로컬 테스트옹)
