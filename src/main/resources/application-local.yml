@@ -1,6 +1,7 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:boarddb
+    # 사용법 : h2:file:{위치}/{db명},h2:mem:{db명}. 테이블 저장을 위해 파일형태로 함
+    url: jdbc:h2:file:D:/kyu-lab/h2/boarddb
     driver-class-name: org.h2.Driver
     hikari:
       username: sa
@@ -11,9 +12,8 @@ spring:
       path: /h2-board
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    properties:
-      hibernate:
-        ddl-auto: none
+    hibernate:
+      ddl-auto: update
 
 springdoc:
   api-docs:

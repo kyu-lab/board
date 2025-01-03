@@ -1,6 +1,7 @@
 package com.kyulab.board.controller;
 
 import com.kyulab.board.dto.Board;
+import com.kyulab.board.service.BoardKafkaService;
 import com.kyulab.board.service.BoardService;
 import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 public class BoardController {
 
 	private final BoardService boardService;
+	private final BoardKafkaService boardKafkaService;
 
 	// 테스트중
 	private final WebClient webClient = WebClient.builder()
@@ -40,6 +42,7 @@ public class BoardController {
 				.flatMap(userExists -> { // flatMap을 사용하여 Mono 처리
 					if (userExists != null && userExists) {
 						boardService.saveBoard(board);
+						boardKafkaService.sendMsg("user-group", "테스트");
 						return Mono.empty(); // Void를 반환하는 Mono 생성
 					} else {
 						return Mono.error(new Exception("User with ID " + board.getUserId() + " not found.")); // 에러 Mono 반환
