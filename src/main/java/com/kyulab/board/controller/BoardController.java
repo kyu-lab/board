@@ -32,6 +32,7 @@ public class BoardController {
 	}
 
 	// Rest 방식을 이용한 연동
+	/*
 	@PostMapping
 	public Mono<Void> saveBoard(@RequestBody Board board) {
 		return webClient.post()
@@ -49,10 +50,21 @@ public class BoardController {
 					}
 				});
 	}
+	*/
 
-	@GetMapping("/test")
-	public String getUser(@RequestParam String name) {
-		return boardService.getUserResponse(name);
+	// gRPC를 이용한 연동
+	@PostMapping
+	public Mono<Void> saveBoard(@RequestBody Board board) {
+		return boardService.userExists(board.getUserId())
+			.flatMap(exists -> {
+				if (Boolean.TRUE.equals(exists)) {
+					boardService.saveBoard(board);
+					boardKafkaService.sendMsg("user-group", "게시글 생성 완료");
+					return Mono.empty();
+				} else {
+					return Mono.error(new Exception("존재하지 않는 회원 : " + board.getUserName()));
+				}
+			});
 	}
 
 }
