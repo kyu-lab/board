@@ -1,4 +1,6 @@
 server:
+  http2:
+    enabled: true
   port: 8002
 grpc:
   server:
@@ -7,11 +9,6 @@ grpc:
 spring:
   application:
     name: board
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
   kafka:
     bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
     consumer:
@@ -22,10 +19,6 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-logging:
-  level:
-    org.hibernate.sql: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 ---
 # local
