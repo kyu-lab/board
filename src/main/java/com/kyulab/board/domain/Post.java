@@ -1,39 +1,33 @@
 package com.kyulab.board.domain;
 
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Table;
-
-import java.time.LocalDateTime;
-
-@Getter
-@Table("post")
+@Entity
+@Table
 @Builder
 @ToString
-public class Post {
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+public class Post extends BaseEntity {
 
-	@Id
-	private int postId;
+	@Column(nullable = false)
+	private long userId;
 
-	private int boardId;
+	@Column(nullable = false)
+	private String userName;
 
-	private long authorId;
+	@Column(nullable = false)
+	private String subject;
 
-	private String authorName;
+	@Lob
+	private String content;
 
-	private String postSubject;
-
-	private String postContent;
-
-	@CreatedDate
-	private LocalDateTime createDate;
-
-	@LastModifiedDate
-	private LocalDateTime modifiedDate;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "board_id", nullable = false)
+	private Board board;
 
 }

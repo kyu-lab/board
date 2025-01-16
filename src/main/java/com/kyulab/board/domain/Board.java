@@ -1,32 +1,29 @@
 package com.kyulab.board.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter
-@Table("board")
-@Builder
+@Entity
+@Table
 @ToString
-public class Board {
+@Getter
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+public class Board extends BaseEntity {
 
-	@Id
-	private int boardId;
+	@Column(nullable = false)
+	private long userId;
 
-	private long creatorId;
+	@Column(nullable = false)
+	private String name;
 
-	private String boardName;
-
-	@CreatedDate
-	private LocalDateTime createDate;
-
-	@LastModifiedDate
-	private LocalDateTime modifiedDate;
+	@Builder
+	public Board(long userId, String name) {
+		this.userId = userId;
+		this.name = name;
+	}
 
 }

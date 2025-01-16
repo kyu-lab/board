@@ -1,40 +1,41 @@
+debug: true
 spring:
-  sql:
-    init:
-      schema-locations: classpath:/sql/Basic.sql
-  r2dbc:
+  devtools:
+    livereload:
+      enabled: true
+  datasource:
     # 사용법 : h2:file:{위치}/{db명},h2:mem:///{db명}. 테이블 저장을 위해 파일형태로 함
-    url: r2dbc:h2:mem:///boarddb
-    username: sa
-    password: 1234
+    url: jdbc:h2:file:D:/kyu-lab/h2/boarddb
+    driver-class-name: org.h2.Driver
+    hikari:
+      username: sa
+      password:
   h2:
     console:
       enabled: true
+      path: /h2-board
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
 
 logging:
   level:
+    org.hibernate.sql: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.web: DEBUG
-    org.springframework.data.r2dbc: DEBUG
-    org.springframework.r2dbc.core: DEBUG
     org.springframework.transaction: DEBUG
-    org.springframework.boot.autoconfigure.h2: DEBUG
 
 springdoc:
   api-docs:
-    path: /docs-local
     groups:
       enabled: true
+    path: /docs-board
+    enabled: true
   swagger-ui:
     path: /swagger
     groups-order: asc
     doc-expansion: none
   cache:
-    disabled: true
+    disabled: false
   model-and-view-allowed: true
-
-grpc:
-  client:
-    user-service:
-      address: static://localhost:9001  # 연결할 gRPC 서버의 주소 (user 모듈의 gRPC 서버 주소)
-      enableKeepAlive: false # 연결 지속 여부
-      negotiationType: PLAINTEXT # SSL/TLS 암호화 사용하지 않음 (로컬 테스트옹)

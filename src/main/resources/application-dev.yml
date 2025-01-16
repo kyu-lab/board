@@ -1,12 +1,39 @@
 spring:
-  h2:
-    console:
-      enabled: false
+  devtools:
+    livereload:
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kyulab
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      username: postgres
+      password: 1234
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
-# 운영시에는 키 필요
-grpc:
-  server:
-    security:
-      certificate-chain: #인증서 체인 경로
-      private-key: # 개인 키 파일 경로
-      private-key-password: # 개인 키 비밀번호
+logging:
+  level:
+    org.hibernate.sql: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.web: DEBUG
+    org.springframework.transaction: DEBUG
+
+springdoc:
+  api-docs:
+    groups:
+      enabled: true
+    path: /docs-board
+    enabled: true
+  swagger-ui:
+    path: /swagger
+    groups-order: asc
+    doc-expansion: none
+  cache:
+    disabled: false
+  model-and-view-allowed: true

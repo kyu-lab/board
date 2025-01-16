@@ -1,11 +1,16 @@
 package com.kyulab.board.service;
 
+import com.kyulab.board.domain.Board;
 import com.kyulab.board.domain.Post;
-import com.kyulab.board.repository.PostRepository;
+import com.kyulab.board.dto.request.post.PostRequest;
+import com.kyulab.board.dto.response.post.PostResponse;
+import com.kyulab.board.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,27 +19,46 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final BoardService boardService;
 
-	public Mono<Post> getPost(int postID) {
-		return postRepository.findById(postID);
+	public Post findById(long id) {
+		return postRepository.findById(id).orElse(null);
 	}
 
-	public Flux<Post> getPosts() {
+	public List<Post> getPosts() {
 		return postRepository.findAll();
 	}
 
-	public Mono<Boolean> existsByPostId(int postId) {
-		return postRepository.existsById(postId);
+	public boolean existsById(long id) {
+		return postRepository.existsById(id);
 	}
 
-	public Mono<Void> savePost(Post post) {
-		return boardService.existsByBoardId(post.getBoardId())
-				.flatMap(exists -> {
-					if (exists) {
-						return postRepository.save(post).then();
-					} else {
-						return Mono.error(new Exception("게시글 저장 실패"));
-					}
-				});
+	public PostResponse getPostResponse(long id) {
+		Post post = findById(id);
+		if (Objects.isNull(post)) {
+			return PostResponse.builder().build();
+		}
+		return PostResponse.builder()
+				.userName(post.getUserName())
+				.subject(post.getSubject())
+				.content(post.getContent())
+				.modifiedDate(post.getModifiedDate())
+				.build();
+	}
+
+
+	public boolean savePost(PostRequest postRequest) {
+		Optional<Board> targetBoard = boardService.findById(postRequest.getBoardId());
+		if (targetBoard.isEmpty()) {
+			return false;
+		}
+		Post newPost = Post.builder()
+				.userId(postRequest.getUserId())
+				.userName(postRequest.getUserName())
+				.subject(postRequest.getSubject())
+				.content(postRequest.getContent())
+				.board(targetBoard.get())
+				.build();
+		postRepository.save(newPost);
+		return true;
 	}
 
 }

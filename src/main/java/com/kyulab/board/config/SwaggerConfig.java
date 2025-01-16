@@ -17,17 +17,16 @@ public class SwaggerConfig {
 		Info info = new Info()
 						.title("springdoc-openapi")
 						.version("0.0.2")
-						.description("여기는 board임");
+						.description("board-app");
 
 		SecurityRequirement securityRequirement = new SecurityRequirement().addList(HttpHeaders.AUTHORIZATION);
 		Components jwtTestComp = new Components() // 액세스 토큰인증 기능 추가
-				.addSecuritySchemes(HttpHeaders.AUTHORIZATION, new SecurityScheme()
+						.addSecuritySchemes(HttpHeaders.AUTHORIZATION, new SecurityScheme()
 						.type(SecurityScheme.Type.HTTP)
 						.scheme("bearer")
 						.bearerFormat("JWT")
 						.in(SecurityScheme.In.HEADER)
 						.name(HttpHeaders.AUTHORIZATION));
-
 		return new OpenAPI()
 				.info(info)
 				.components(jwtTestComp)

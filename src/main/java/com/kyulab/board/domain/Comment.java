@@ -1,36 +1,31 @@
 package com.kyulab.board.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 
-@Getter
-@Table("comment")
+@Entity
+@Table
 @Builder
 @ToString
-public class Comment {
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+public class Comment extends BaseEntity {
 
-	@Id
-	private int commentId;
+	@Column(nullable = false)
+	private long userId;
 
-	private int postId;
+	@Column(nullable = false)
+	private String userName;
 
-	private long commentAuthorId;
+	@Column(nullable = false)
+	private String content;
 
-	private String commentAuthorName;
-
-	private String commentConent;
-
-	@CreatedDate
-	private LocalDateTime createDate;
-
-	@LastModifiedDate
-	private LocalDateTime modifiedDate;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "POST_ID", nullable = false)
+	private Post post;
 
 }

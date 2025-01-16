@@ -1,54 +1,37 @@
 package com.kyulab.board.service;
 
 import com.kyulab.board.domain.Board;
-import com.kyulab.board.repository.BoardRepository;
-import com.kyulab.grpc.user.UserExistsRequest;
-import com.kyulab.grpc.user.UserExistsResponse;
-import com.kyulab.grpc.user.UserServiceGrpc;
+import com.kyulab.board.dto.response.board.BoardResponse;
+import com.kyulab.board.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
-import net.devh.boot.grpc.client.inject.GrpcClient;
-import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-@GrpcService
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
-public class BoardService extends UserServiceGrpc.UserServiceImplBase {
+public class BoardService {
 
 	private final BoardRepository boardRepository;
 
-	@GrpcClient("user-service")
-	private UserServiceGrpc.UserServiceBlockingStub userServiceBlockingStub;
-
-	public Mono<Board> getBoard(int boardId) {
-		return boardRepository.findById(boardId);
-	}
-
-	public Flux<Board> getBoards() {
+	public List<Board> getBoards() {
 		return boardRepository.findAll();
 	}
 
-	public Mono<Boolean> existsByBoardId(int boardId) {
-		return boardRepository.existsById(boardId);
+	public boolean existsById(long id) {
+		return boardRepository.existsById(id);
 	}
 
-	public Mono<Void> saveBoard(Board board) {
-		return boardRepository.save(board).then();
+	public Optional<Board> findById(long id) {
+		if (existsById(id)) {
+			return boardRepository.findById(id);
+		}
+		return Optional.empty();
 	}
 
-	/*
-	public Mono<Boolean> userExists(int userId) {
-		return Mono.fromCallable(() -> {
-			UserExistsRequest request = UserExistsRequest.newBuilder()
-					.setUserId(userId)
-					.build();
-
-			UserExistsResponse response = userServiceBlockingStub.userExists(request);
-			return response.getExists();
-		});
+	public void saveBoard(Board board) {
+		boardRepository.save(board);
 	}
-	*/
 
 }

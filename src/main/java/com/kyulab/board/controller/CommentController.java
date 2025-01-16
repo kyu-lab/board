@@ -1,57 +1,50 @@
 package com.kyulab.board.controller;
 
-import com.kyulab.board.config.GatewayConfig;
+import com.kyulab.board.dto.response.comment.CommentResponse;
+import com.kyulab.board.service.GatewayService;
 import com.kyulab.board.domain.Comment;
-import com.kyulab.board.dto.request.CommentCreateRequest;
+import com.kyulab.board.dto.request.comment.CommentRequest;
 import com.kyulab.board.service.CommentService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/v1/comment")
 @Tag(name = "댓글 API")
 @RequiredArgsConstructor
 public class CommentController {
 
 	private final CommentService commentService;
-	private final WebClient webClient = GatewayConfig.getLocalWebClient();
+	private final GatewayService.ApiSerivce apiSerivce;
 
 	@GetMapping("/{postId}")
-	@ResponseStatus(HttpStatus.OK)
-	public Flux<Comment> getComments(@PathVariable int postId) {
-		return commentService.getComments(postId);
+	@Operation(summary = "댓글 목록을 가져온다.")
+	public ResponseEntity<List<CommentResponse>> findAllCommentsByPostId(@PathVariable long postId) {
+		return ResponseEntity.ok(commentService.findAllCommentsByPostId(postId));
 	}
 
 	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public Mono<Void> savePost(ServerHttpRequest httpRequest, @RequestBody CommentCreateRequest commentCreateRequest) {
-		return webClient.post()
-				.uri("/user/auth/{userId}", commentCreateRequest.getCommentAuthorId())
-				.header(HttpHeaders.AUTHORIZATION, httpRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
-				.accept(MediaType.APPLICATION_JSON)
-				.retrieve()
-				.bodyToMono(Boolean.class)
-				.flatMap(userExists -> {
-					if (userExists != null && userExists) {
-						Comment newComment = Comment.builder()
-								.postId(commentCreateRequest.getPostId())
-								.commentAuthorId(commentCreateRequest.getCommentAuthorId())
-								.commentConent(commentCreateRequest.getCommentConent())
-								.build();
-						return commentService.saveComment(newComment).doOnTerminate(() ->
-								System.out.println("답글 저장 완료"));
-					} else {
-						return Mono.error(new Exception("User with ID " + commentCreateRequest.getCommentAuthorId() + " not found."));
-					}
-				});
+	@Operation(summary = "회원인증 후 댓글을 저장한다.")
+	public ResponseEntity<String> saveComment(HttpServletRequest httpRequest, @RequestBody CommentRequest commentRequest) {
+		String uri = "/v1/user/auth/" + commentRequest.getUserId();
+		String token = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+		if (Boolean.TRUE.equals(Boolean.parseBoolean(apiSerivce.postStringDataWithToken(uri, token)))) {
+			if (commentService.saveComment(commentRequest)) {
+				return ResponseEntity.ok().build();
+			} else{
+				return ResponseEntity.badRequest().build();
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
 	}
 
 }
