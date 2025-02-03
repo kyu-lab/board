@@ -8,9 +8,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table
 @Builder
 @ToString
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class Post extends BaseEntity {
 
@@ -24,6 +24,7 @@ public class Post extends BaseEntity {
 	private String subject;
 
 	@Lob
+	@Column(columnDefinition = "TEXT")
 	private String content;
 
 	@ManyToOne(fetch = FetchType.LAZY)

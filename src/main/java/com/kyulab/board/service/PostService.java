@@ -3,10 +3,12 @@ package com.kyulab.board.service;
 import com.kyulab.board.domain.Board;
 import com.kyulab.board.domain.Post;
 import com.kyulab.board.dto.request.post.PostRequest;
+import com.kyulab.board.dto.response.post.PostListResponse;
 import com.kyulab.board.dto.response.post.PostResponse;
 import com.kyulab.board.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,19 +33,10 @@ public class PostService {
 		return postRepository.existsById(id);
 	}
 
-	public PostResponse getPostResponse(long id) {
-		Post post = findById(id);
-		if (Objects.isNull(post)) {
-			return PostResponse.builder().build();
-		}
-		return PostResponse.builder()
-				.userName(post.getUserName())
-				.subject(post.getSubject())
-				.content(post.getContent())
-				.modifiedDate(post.getModifiedDate())
-				.build();
+	@Transactional(readOnly = true)
+	public PostResponse findPostAndCommentById(long id) {
+		return postRepository.findPostAndCommentById(id);
 	}
-
 
 	public boolean savePost(PostRequest postRequest) {
 		Optional<Board> targetBoard = boardService.findById(postRequest.getBoardId());

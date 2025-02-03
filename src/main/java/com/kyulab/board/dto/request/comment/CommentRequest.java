@@ -16,6 +16,6 @@ public class CommentRequest {
 
 	private String userName;
 
-	private String conent;
+	private String content;
 
 }

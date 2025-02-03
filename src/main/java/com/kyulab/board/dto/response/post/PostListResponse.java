@@ -1,22 +1,20 @@
 package com.kyulab.board.dto.response.post;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @ToString
+@Getter
 @AllArgsConstructor
-@Builder
-@NoArgsConstructor
 public class PostListResponse {
+	private long id;
+
+	private long userId;
+
 	private String userName;
 
 	private String subject;
-
-	private String content;
 
 	private LocalDateTime lastModifiedDate;
 }

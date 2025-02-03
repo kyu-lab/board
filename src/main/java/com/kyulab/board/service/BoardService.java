@@ -1,7 +1,7 @@
 package com.kyulab.board.service;
 
 import com.kyulab.board.domain.Board;
-import com.kyulab.board.dto.response.board.BoardResponse;
+import com.kyulab.board.dto.response.post.PostListResponse;
 import com.kyulab.board.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,10 @@ import java.util.Optional;
 public class BoardService {
 
 	private final BoardRepository boardRepository;
+
+	public List<PostListResponse> findPostByBoardId(long id) {
+		return boardRepository.findPostByBoardId(id);
+	}
 
 	public List<Board> getBoards() {
 		return boardRepository.findAll();

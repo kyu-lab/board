@@ -33,7 +33,7 @@ public class CommentService {
 		Comment newComment = Comment.builder()
 				.userId(commentRequest.getUserId())
 				.userName(commentRequest.getUserName())
-				.content(commentRequest.getConent())
+				.content(commentRequest.getContent())
 				.post(targetPost)
 				.build();
 		commentRepository.save(newComment);

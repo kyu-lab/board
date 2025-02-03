@@ -13,11 +13,7 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
 	@Id
-	@GeneratedValue(generator = "snowflake-id-gen")
-	@GenericGenerator(
-		name = "snowflake-id-gen",
-		strategy = "com.kyulab.board.util.SnowflakeIdGen"
-	)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@CreatedDate
